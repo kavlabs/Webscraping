@@ -1,0 +1,48 @@
+import requests
+import bs4
+url="http://www.mitsgwalior.in/"
+kk=requests.get(url)  #as text
+'''
+print(kk.content)
+with open("kk1.html","a+") as f:
+    f.write(kk.content)
+'''
+links = []
+linksns=[]
+soup = bs4.BeautifulSoup(kk.text,"lxml") #html
+#print(soup)
+a_tag = soup.find_all("a")
+for l in a_tag:
+    l = l.get('href')
+    if l !=None and "pdf" not in l:
+        l=url+l
+        l='http'+l.split('http')[-1]
+        linksns=linksns+[l]
+        print(l)
+#print('list of links not searched',linksns)
+    #print(i)
+i=0
+while linksns._len_ !=0:
+    if linksns[0] in links:
+        print('element to be deleted',linksns[0])
+        del(linksns[0])
+        print('element deleted ...First element is',linksns[0])
+        continue
+    print("file being created for ",linksns[0])
+    kk=requests.get(linksns[0])
+    soup = bs4.BeautifulSoup(kk.text,"lxml")
+    with open(str(i)+".html","a+") as f:
+        #print(kk.content)
+        f.write(kk.content)
+        f.close
+    a_tag = soup.find_all("a")
+    for l in a_tag:
+        l = l.get('href')
+        if l!=None and str([url+l]) not in links:
+            linksns=linksns+[url+l]
+    links+=[linksns[0]]
+    print('final element deleted',linksns[0])
+    del(linksns[0])
+
+    print('links :',links)
+    i+=1

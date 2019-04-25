@@ -1,0 +1,41 @@
+import json
+import requests
+import bs4
+with requests.Session() as s:
+    url_main = "https://www.instagram.com/accounts/login/ajax/"
+    auth = {'username': 'sameekshasaboo', 'password': 'vanisaboo'}
+    headers = {'referer': "https://www.instagram.com/accounts/login/"}
+    req = s.get(url_main)
+    headers['x-csrftoken'] = req.cookies['csrftoken']
+    k=s.post(url_main, data=auth, headers=headers)
+    print(k.status_code)
+    has_next_page='True'
+    after="QVFCZThQbXRJaFBjQ2Y1bzJLeHF2c2FEM1lLOWJvNDlCMlljNUdOSjNodVNudUw4WVE1U0E4UndEQ0JXY2lCLUpRUldaR21TZVN3QVpPdW1aR3hhTTZ5SA"
+    k=50001
+    while has_next_page=="True":
+        url="https://www.instagram.com/graphql/query/?query_hash=f2405b236d85e8296cf30347c9f08c2a&variables=%7B%22id%22%3A%222708048228%22%2C%22first%22%3A12%2C%22after%22%3A%22"+after+"%3D%3D%22%7D"
+        req=s.get(url)
+        print(req)
+        a=req.content
+        y = json.loads(a)
+        after=str(y["data"]["user"]["edge_owner_to_timeline_media"]["page_info"]["end_cursor"])
+        has_next_page=str(y["data"]["user"]["edge_owner_to_timeline_media"]["page_info"]["has_next_page"])
+        after=list(after.split('='))[0]
+        print('after=',after)
+        print('has next',has_next_page)
+        #with open("kkkk.json","w+") as f:
+        #    f.write(a)
+        for i in y['data']['user']['edge_owner_to_timeline_media']['edges']:
+            if i['node']['__typename']=='GraphImage':
+                j=i['node']['thumbnail_src']
+                kk=s.get(j)
+                with open(str(k)+".jpeg","wb") as f:
+                    f.write(kk.content)
+                    f.close
+            if i['node']['__typename']=='GraphVideo':
+                j=i['node']['video_url']
+                kk=s.get(j)
+                with open(str(k)+".amv","wb") as f:
+                    f.write(kk.content)
+                    f.close
+            k+=1

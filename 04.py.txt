@@ -1,0 +1,32 @@
+import requests
+import bs4
+url="https://www.google.com/search?q=dog"
+kk=requests.get(url)  #as text
+soup = bs4.BeautifulSoup(kk.text,"lxml") #html
+'''
+with open("vivek"+".html","a+") as f:
+    f.write(kk.content)
+'''
+#print(soup)
+a_tag = soup.find_all("a")
+k=300
+#print(type(a_tag))
+for i in a_tag:
+
+    i = i.get('href')
+    if  "/search?q=dog" in i:
+        print(str(i))
+
+
+'''
+    i = i.get('href')
+    print(i)
+    if i==None:
+        continue
+    kk=requests.get(i)
+    #print(kk.content)
+    with open(str(k)+".jpeg","wb") as f:
+        f.write(kk.content)
+        f.close
+'''
+    #k+=1

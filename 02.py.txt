@@ -1,0 +1,19 @@
+import requests
+import bs4
+url="https://unsplash.com/"
+kk=requests.get(url)  #as text
+soup = bs4.BeautifulSoup(kk.text,"lxml") #html
+#print(soup)
+img_tag = soup.find_all("img")
+k=200
+for i in img_tag:
+    i = i.get('src')
+    print(i)
+    if i==None:
+        continue
+    kk=requests.get(i)
+    #print(kk.content)
+    with open(str(k)+".jpeg","wb") as f:
+        f.write(kk.content)
+        f.close
+    k+=1
